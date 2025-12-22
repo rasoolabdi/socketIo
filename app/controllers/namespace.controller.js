@@ -1,3 +1,4 @@
+const createHttpError = require("http-errors");
 const Controller = require("../Controller");
 const ConversationModel = require("../models/conversation");
 const {StatusCodes: HttpStatus} = require("http-status-codes");
@@ -11,6 +12,25 @@ class NameSpaceController extends Controller {
                 statuCodes: HttpStatus.CREATED,
                 data: {
                     message: "فضای مکالمه با موفقیت ایجاد شد"
+                }
+            })
+        }
+        catch(error) {
+            next(error);
+        }
+    }
+
+    async getListOfNameSpaces(req ,res , next) {
+        try {
+            const namespaces = await ConversationModel.find({} , {rooms: 0});
+            if(!namespaces) {
+                throw createHttpError.NotFound("فضای مکالمه ایی پیدا نشد")
+            };
+
+            return res.status(HttpStatus.OK).json({
+                statuCodes: HttpStatus.OK,
+                data: {
+                    namespaces
                 }
             })
         }
