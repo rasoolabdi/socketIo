@@ -7,6 +7,7 @@ const ExpressEjsLayout = require("express-ejs-layouts");
 const { MainRouterApi } = require("./router/MainRouters");
 const createHttpError = require("http-errors");
 const path = require("path");
+const swaggerConfig = require("./config/swagger.config");
 
 class Application {
     #app = express();
@@ -25,6 +26,7 @@ class Application {
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extended: true}));
         this.#app.use(express.static(path.join(__dirname , ".." , "public")));
+        swaggerConfig(this.#app);
     }
 
     configMongoose() {
