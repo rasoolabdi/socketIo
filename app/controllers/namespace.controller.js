@@ -7,7 +7,8 @@ class NameSpaceController extends Controller {
     async addNameSpace(req , res , next) {
         try {
             const {title , endpoint} = req.body;
-            const conversation = await ConversationModel.create({title , endpoint});
+            await this.existsNamespaceWithEndpoint(endpoint);
+            await ConversationModel.create({title , endpoint});
             return res.status(HttpStatus.CREATED).json({
                 statuCodes: HttpStatus.CREATED,
                 data: {
@@ -39,6 +40,12 @@ class NameSpaceController extends Controller {
         }
     }
 
+    async existsNamespaceWithEndpoint(endpoint) {
+        const conversation = await ConversationModel.findOne({endpoint});
+        if(conversation) {
+            throw createHttpError.BadRequest("این اسم قبلا انتخاب شده است")
+        }
+    }
 
 }
 
