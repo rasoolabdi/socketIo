@@ -3,5 +3,4 @@ node_modules/*
 *.DS_Store
 yarn.lock
 .vscode/*
-uploads/*
-.env
+public/uploads/*
