@@ -8,6 +8,10 @@ const { MainRouterApi } = require("./router/MainRouters");
 const createHttpError = require("http-errors");
 const path = require("path");
 const swaggerConfig = require("./config/swagger.config");
+const http = require("http");
+const { initialSocket } = require("./utils/initSocket");
+const { socketHandler } = require("./TCP/socket.io");
+
 
 class Application {
     #app = express();
@@ -70,7 +74,10 @@ class Application {
 
     createServer() {
         const PORT = process.env.PORT;
-        this.#app.listen(PORT , () => {
+        const server = http.createServer(this.#app);
+        const io = initialSocket(server);
+        socketHandler(io);
+        server.listen(PORT , () => {
             console.log(`Application Running on http://localhost:${PORT}`)
         })
     }
