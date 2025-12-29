@@ -367,7 +367,7 @@
       padding-bottom: 120px;
     }
     #roomName {
-      background: #435f7a;
+      background: #9df0f6;
       padding-right: 10px;
       text-align: right;
     }
@@ -376,7 +376,8 @@
       margin: 0;
       margin-right: 15px;
       text-align: right;
-      color:#E6EAEA
+      color:#3365f0;
+      font-size: 1.2rem;
     }
     #frame .content .contact-profile {
       width: 100%;

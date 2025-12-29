@@ -61,8 +61,8 @@ class Application {
 
 
         this.#app.use((error , req , res , next) => {
-            const serverError = createHttpError.InternalServerError();
-            const StatusError = error.status;
+            const serverError = createHttpError.InternalServerError("خطای سمت سرور رخ داده است");
+            const StatusError = error.status || 500;
             const MessageError = error.message || serverError;
 
             return res.status(StatusError).json({
