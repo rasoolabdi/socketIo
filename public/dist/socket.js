@@ -33,7 +33,7 @@ socket.on("connect" , () => {
     socket.on("namespacesList" , (namespacesList) => {
         const namespacesElement = document.getElementById("namespaces");
         namespacesElement.innerHTML = "";
-        initNamespaceConnection(namespacesList[3].endpoint)
+        initNamespaceConnection(namespacesList[0].endpoint)
         for(const namespaces of namespacesList) {
             const li = document.createElement("li");
             const p = document.createElement("p");
