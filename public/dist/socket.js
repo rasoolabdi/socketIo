@@ -14,9 +14,13 @@ function getRoomInfo(roomName) {
         console.log(roomInfo);
         document.querySelector("#roomName h3").innerText = roomInfo.description;
     });
+    namespaceSocket.on("countOfOnlineUsers" , (count) => {
+        document.getElementById("onlineCount").innerText = count;
+    })
 }
 
 function initNamespaceConnection(endpoint){
+    if(namespaceSocket) namespaceSocket.close();
     namespaceSocket = io(`http://localhost:5000/${endpoint}`);
     namespaceSocket.on("connect" , () => {
         namespaceSocket.on("roomList" , (rooms) => {
