@@ -7,11 +7,12 @@ function stringToHTML(str) {
     return doc.body.firstChild;
 }
 
-function getRoomInfo(roomName) {
+function getRoomInfo(endpoint , roomName) {
+    document.querySelector("#roomName h3").setAttribute("roomName" , roomName);
+    document.querySelector("#roomName h3").setAttribute("endpoint" , endpoint);
     namespaceSocket.emit("joinRoom" , roomName);
     namespaceSocket.off("roomInfo");
     namespaceSocket.on("roomInfo" , (roomInfo) => {
-        console.log(roomInfo);
         document.querySelector("#roomName h3").innerText = roomInfo.description;
     });
     namespaceSocket.on("countOfOnlineUsers" , (count) => {
@@ -19,12 +20,41 @@ function getRoomInfo(roomName) {
     })
 }
 
+function sendMessage() {
+    const roomName = document.querySelector("#roomName h3").getAttribute("roomName");
+    const endpoint = document.querySelector("#roomName h3").getAttribute("endpoint");
+    let message = document.getElementById("messageInput").value;    
+    if(message.trim() === ""){
+        return alert("لطفا متن خود را وارد نمایید")
+    }
+    namespaceSocket.emit("newMessage" , {
+        message,
+        roomName,
+        endpoint
+    })
+
+    namespaceSocket.on("confirmMessage" , (data) => {
+        console.log(data)
+    })
+
+    const li = stringToHTML(`
+        <li class="sent">
+            <img src="" alt="image"/>        
+            <p>${message}</p>
+        </li>
+    `);
+    document.querySelector(".messages ul").appendChild(li);
+    document.querySelector(".message-input input#messageInput").value = "";
+    const messagesElement = document.querySelector("div.messages");
+    messagesElement.scrollTo(0 , messagesElement.scrollHeight);
+}
+
 function initNamespaceConnection(endpoint){
     if(namespaceSocket) namespaceSocket.close();
     namespaceSocket = io(`http://localhost:5000/${endpoint}`);
     namespaceSocket.on("connect" , () => {
         namespaceSocket.on("roomList" , (rooms) => {
-            getRoomInfo(rooms[0].name);
+            getRoomInfo(endpoint , rooms[0]?.name);
             const roomElement = document.querySelector("#contacts ul");
             roomElement.innerHTML = "";
             for(const room of rooms) {
@@ -45,7 +75,7 @@ function initNamespaceConnection(endpoint){
             for(const room of roomNodes) {
                 room.addEventListener("click" , () => {
                     const roomName = room.getAttribute("roomName");
-                    getRoomInfo(roomName);
+                    getRoomInfo(endpoint , roomName);
                 })
             }
         })
@@ -77,5 +107,14 @@ socket.on("connect" , () => {
             })
         }
     })
+    window.addEventListener("keydown" , (e) => {
+        if(e.code === "Enter") {
+            sendMessage();
+        }
+    });
 
-})
+    document.querySelector("button.submit").addEventListener("click" , () => {
+        sendMessage()
+    })
+});
+

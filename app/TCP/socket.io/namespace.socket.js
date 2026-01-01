@@ -1,4 +1,5 @@
 const ConversationModel = require("../../models/conversation");
+const moment = require("moment-jalali");
 
 class NameSpaceSocketHandler {
     #io;
@@ -23,6 +24,7 @@ class NameSpaceSocketHandler {
                     const lastRoom = Array.from(socket.rooms)[1];
                     if(lastRoom) {
                         socket.leave(lastRoom);
+                        await this.getCountOfOnlineUsers(namespace.endpoint , roomName);
                     }
                     socket.join(roomName);
                     await this.getCountOfOnlineUsers(namespace.endpoint , roomName);
@@ -30,6 +32,7 @@ class NameSpaceSocketHandler {
                     //send content rooms to client
                     const roomInfo = conversation.rooms.find((item) => item.name == roomName);
                     socket.emit("roomInfo" , roomInfo);
+                    this.getNewMessage(socket);
                     socket.on("disconnect" , async () => {
                         await this.getCountOfOnlineUsers(namespace.endpoint , roomName);
                     })
@@ -41,6 +44,21 @@ class NameSpaceSocketHandler {
     async getCountOfOnlineUsers(endpoint , roomName) {
         const onlineUsers = await this.#io.of(`/${endpoint}`).in(roomName).allSockets();
         this.#io.of(`/${endpoint}`).in(roomName).emit("countOfOnlineUsers" , Array.from(onlineUsers).length);
+    }
+
+    async getNewMessage(socket) {
+        socket.on("newMessage" , async (data) => {
+            console.log(data);
+            const {message , roomName , endpoint} = data;
+            await ConversationModel.updateOne({endpoint , "rooms.name": roomName} , {
+                $push: {
+                    "rooms.$.messages": {
+                        message,
+                        dateTime: Date.now()
+                    }
+                }
+            });
+        })
     }
 };
 module.exports = NameSpaceSocketHandler;

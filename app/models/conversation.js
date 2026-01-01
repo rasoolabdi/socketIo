@@ -2,9 +2,9 @@ const { default: mongoose, model } = require("mongoose");
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const messageSchema = new mongoose.Schema({
-    sender: {type: ObjectId , ref: "user"},
+    sender: {type: ObjectId , ref: "user" , required: false},
     message: {type: String},
-    dateTime: {type: String}
+    dateTime: {type: Number}
 })
 
 const roomSchema = new mongoose.Schema({
