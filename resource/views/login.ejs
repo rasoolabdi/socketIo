@@ -1,0 +1,16 @@
+<div id="frame">
+  <%if(data){%>
+    <h3 style="color: rgb(240 , 80 , 80);"><%=data%></h3>
+  <%}%>
+
+  <div class="col-2"></div>
+  <div class="col-4 loginForm">
+      <form action="http://localhost:5000/chat/login" method="post">
+        <div class="form-group">
+          <label for="mobile">شماره موبایل : </label>
+          <input type="mobile" name="mobile" class="form-control" id="mobile" placeholder="mobile">
+        </div>
+        <button type="submit" class="btn btn-primary">ورود</button>
+      </form>
+  </div>
+</div>

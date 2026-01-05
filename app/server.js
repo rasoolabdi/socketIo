@@ -11,6 +11,7 @@ const swaggerConfig = require("./config/swagger.config");
 const http = require("http");
 const { initialSocket } = require("./utils/initSocket");
 const { socketHandler } = require("./TCP/socket.io");
+const cookieParser = require("cookie-parser");
 
 
 class Application {
@@ -30,6 +31,7 @@ class Application {
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extended: true}));
         this.#app.use(express.static(path.join(__dirname , ".." , "public")));
+        this.#app.use(cookieParser(process.env.COOKIE_PARSER_SECRET_KEY));
         swaggerConfig(this.#app);
     }
 

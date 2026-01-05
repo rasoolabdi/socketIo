@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "auto-bind": "^3.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "ejs": "^3.1.10",
@@ -20,6 +21,7 @@
     "http": "^0.0.1-security",
     "http-errors": "^2.0.1",
     "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.3",
     "moment-jalali": "^0.3.9",
     "mongoose": "^8.20.3",
     "multer": "^2.0.2",
